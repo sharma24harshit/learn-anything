@@ -19,6 +19,7 @@ function App() {
 
   return (
     <>
+        <Navbar />
       <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/ai" element={<Ai />} />
@@ -30,11 +31,6 @@ function App() {
       <Route path="/links" element={<LinksPage />} />
       <Route path="/jobs" element={<JobsPage />} />
     </Routes>
-    
-    <Navbar />
-<h1 className="text-5xl font-bold text-green-600">
-      Tailwind CSS 3.4.3 is working 🚀
-    </h1>
     </>
   )
 }

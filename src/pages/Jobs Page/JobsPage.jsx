@@ -6,7 +6,20 @@ import React from 'react'
 
 const JobsPage = () => {
   return (
-    <div>JobsPage</div>
+    <div>
+    <div className='border border-red-500'>
+    <p className='text-3xl font-bold text-heading_color'>List of Recruitment Agencies:</p>
+
+    <ul className='text-xl text-sub_heading font-semibold list-decimal list-inside'>
+        <li>Randstad</li>
+        <li>Teamlease</li>
+        <li>Adecco</li>
+        <li>Michael Page</li>
+        <li>Abc Consultants</li>
+      </ul>
+      </div>
+
+    </div>
   )
 }
 

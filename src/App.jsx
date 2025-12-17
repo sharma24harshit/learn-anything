@@ -13,6 +13,7 @@ import Javascript from './pages/Javascript Page/Javascript'
 import LinksPage from './pages/Links Page/LinksPage'
 import ReactPage from './pages/React Page/ReactPage'
 import Navbar from './components/Navbar/Navbar'
+import AddData from './pages/AddData Page/AddData'
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
       <Route path="/react" element={<ReactPage />} />
       <Route path="/links" element={<LinksPage />} />
       <Route path="/jobs" element={<JobsPage />} />
+      <Route path="/add_data" element={<AddData />} />
     </Routes>
     </>
   )

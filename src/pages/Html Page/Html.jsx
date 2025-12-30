@@ -1,97 +1,7 @@
-import React, { useState, useEffect, useCallback, useMemo, memo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { getTopicData, deleteQuestion } from '../../data/data'
 import { useNavigate } from 'react-router-dom'
-
-// Memoized Question Card Component
-const QuestionCard = memo(({ item, expandedId, onToggleExpand, onDelete, getDifficultyColor }) => {
-  const isExpanded = expandedId === item.id
-
-  return (
-    <div className="border-2 border-base_border rounded-xl bg-card_bg p-5 hover:shadow-lg transition-shadow">
-      <div className="flex justify-between items-start mb-3">
-        <div className="flex-1">
-          <h3 className="text-xl font-bold text-heading_color mb-2">
-            {item.question}
-          </h3>
-          <div className="flex flex-wrap gap-2 items-center">
-            <span
-              className={`px-3 py-1 rounded-full text-sm font-semibold ${getDifficultyColor(
-                item.difficulty
-              )}`}
-            >
-              {item.difficulty.charAt(0).toUpperCase() + item.difficulty.slice(1)}
-            </span>
-            {item.tags && item.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1">
-                {item.tags.map((tag, idx) => (
-                  <span
-                    key={idx}
-                    className="px-2 py-1 rounded bg-base_color text-text_color text-xs"
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-        <button
-          onClick={() => onDelete(item.id)}
-          className="ml-4 px-3 py-1 text-red-600 hover:bg-red-100 rounded-lg font-semibold"
-        >
-          Delete
-        </button>
-      </div>
-
-      <div className="mt-3">
-        <button
-          onClick={() => onToggleExpand(item.id)}
-          className="text-primary font-semibold hover:underline mb-2"
-        >
-          {isExpanded ? 'Hide Answer' : 'Show Answer'}
-        </button>
-
-        {isExpanded && (
-          <div className="mt-3 space-y-3">
-            <div className="bg-white rounded-lg p-4 border border-base_border">
-              <h4 className="font-bold text-sub_heading mb-2">Answer / Explanation:</h4>
-              <p className="text-text_color whitespace-pre-wrap">{item.answer}</p>
-            </div>
-
-            {item.source && (
-              <div className="bg-white rounded-lg p-4 border border-base_border">
-                <h4 className="font-bold text-sub_heading mb-2">Source:</h4>
-                <p className="text-text_color">
-                  {item.source.startsWith('http') ? (
-                    <a
-                      href={item.source}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline"
-                    >
-                      {item.source}
-                    </a>
-                  ) : (
-                    item.source
-                  )}
-                </p>
-              </div>
-            )}
-
-            {item.notes && (
-              <div className="bg-white rounded-lg p-4 border border-base_border">
-                <h4 className="font-bold text-sub_heading mb-2">Extra Notes:</h4>
-                <p className="text-text_color whitespace-pre-wrap">{item.notes}</p>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  )
-})
-
-QuestionCard.displayName = 'QuestionCard'
+import QuestionCard from '../../components/QuestionCard/QuestionCard'
 
 const Html = () => {
   const [htmlQuestions, setHtmlQuestions] = useState([])
@@ -150,55 +60,9 @@ const Html = () => {
     setExpandedId((prev) => (prev === id ? null : id))
   }, [])
 
-  // Load questions on component mount
+  // Load questions on component mount (no polling)
   useEffect(() => {
     loadQuestions()
-  }, [loadQuestions])
-
-  // Auto-refresh: Poll for updates when tab is visible
-  useEffect(() => {
-    let intervalId = null
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        // Refresh immediately when tab becomes visible
-        loadQuestions()
-        // Then poll every 5 seconds while visible
-        intervalId = setInterval(() => {
-          loadQuestions()
-        }, 5000)
-      } else {
-        // Clear interval when tab is hidden
-        if (intervalId) {
-          clearInterval(intervalId)
-          intervalId = null
-        }
-      }
-    }
-
-    // Set up initial polling if tab is visible
-    if (document.visibilityState === 'visible') {
-      intervalId = setInterval(() => {
-        loadQuestions()
-      }, 5000)
-    }
-
-    // Listen for visibility changes
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-
-    // Refresh when window gains focus
-    const handleFocus = () => {
-      loadQuestions()
-    }
-    window.addEventListener('focus', handleFocus)
-
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId)
-      }
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-      window.removeEventListener('focus', handleFocus)
-    }
   }, [loadQuestions])
 
   // Memoized sorted questions (newest first)

@@ -4,7 +4,7 @@ import path from 'path'
 import cors from 'cors'
 
 const app = express()
-const PORT = process.env.PORT || 5174
+const PORT = 5174
 const __dirname = path.resolve()
 const DATA_DIR = path.join(__dirname, 'server', 'data')
 const DATA_FILE = path.join(DATA_DIR, 'db.json')

@@ -14,6 +14,7 @@ const initialFormState = {
 const AddData = () => {
   const [form, setForm] = useState(initialFormState)
   const [status, setStatus] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -23,9 +24,10 @@ const AddData = () => {
     }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setStatus(null)
+    setLoading(false)
 
     if (!form.question.trim() || !form.answer.trim()) {
       setStatus('Please fill in both question and answer.')
@@ -38,17 +40,24 @@ const AddData = () => {
         .map((t) => t.trim())
         .filter(Boolean) || []
 
-    addQuestion(form.topic, {
-      question: form.question.trim(),
-      answer: form.answer.trim(),
-      difficulty: form.difficulty,
-      source: form.source.trim(),
-      notes: form.notes.trim(),
-      tags,
-    })
+    setLoading(true)
+    try {
+      await addQuestion(form.topic, {
+        question: form.question.trim(),
+        answer: form.answer.trim(),
+        difficulty: form.difficulty,
+        source: form.source.trim(),
+        notes: form.notes.trim(),
+        tags,
+      })
 
-    setForm(initialFormState)
-    setStatus('Question added successfully!')
+      setForm(initialFormState)
+      setStatus('Question added successfully!')
+    } catch (err) {
+      setStatus(err.message || 'Failed to add question. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -176,8 +185,9 @@ const AddData = () => {
             color: 'white',
 
           }}
+          disabled={loading}
         >
-          Add
+          {loading ? 'Adding...' : 'Add'}
         </button>
 
         {status && (
